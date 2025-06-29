@@ -1,18 +1,54 @@
-# camd v2.0 - Quick Start Guide
+# camd - Find AMD Hardware on Cloud ☁️
 
-## 🚀 What's New in v2.0
+<div align="center">
 
-- **Focus on MI300X**: The latest AMD GPU with 192GB HBM3 memory
-- **Runpod + Vultr**: Two providers with actual MI300X availability
-- **Demo Mode**: Try without API keys using `--demo`
-- **Provider Classes**: Easy to add new providers
-- **Caching**: 5-minute cache to reduce API calls
-- **Better Pricing**: Shows price per GPU for multi-GPU instances
+[![Version](https://img.shields.io/badge/version-6.0.0-blue.svg)](https://github.com/modelturnedgeek/CheaperNvidia)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.6+-yellow.svg)](https://www.python.org)
 
-## 📋 Installation
+**The easiest way to find AMD GPUs and CPUs across cloud providers**
+
+[Installation](#-installation) •
+[Quick Start](#-quick-start) •
+[Features](#-features) •
+[Providers](#-supported-providers) •
+[Hardware](#-supported-hardware) •
+[Roadmap](#-roadmap)
+
+</div>
+
+---
+
+## 🚀 Overview
+
+`camd` (cheapamd) is a command-line tool that helps you find available AMD hardware across cloud providers. With the massive 192GB memory of MI300X GPUs and powerful EPYC CPUs, AMD offers compelling alternatives to NVIDIA hardware.
+
+### Why AMD?
+
+- **MI300X GPU**: 192GB HBM3 memory (2.4x more than H100!)
+- **High Performance**: Excellent compute capabilities
+- **EPYC CPUs**: Best price/performance for CPU workloads
+- **Availability**: Often easier to find than scarce H100s
+
+## ✨ Features
+
+### Current Capabilities (v6.0.0)
+
+- **🔍 Multi-Provider Search**: Vultr and RunPod support
+- **💎 AMD GPU Discovery**: Find MI300X (192GB) and MI250X (128GB)
+- **💻 AMD CPU Discovery**: All EPYC variants (Milan, Rome, Genoa)
+- **💰 Price Comparison**: Sort by hourly cost
+- **🏷️ Spot Pricing**: 50% discounts on RunPod
+- **📦 Multi-GPU Configs**: 1x, 2x, 4x, 8x GPU clusters
+- **⚡ Smart Caching**: 5-minute cache to reduce API calls
+- **🎨 Beautiful CLI**: Color-coded output with emojis
+- **🔐 Secure**: API keys stored locally with 600 permissions
+
+## 📦 Installation
 
 ```bash
-# Save the script
+# Download the script
+curl -O https://raw.githubusercontent.com/modelturnedgeek/CheaperNvidia/main/camd.py
 chmod +x camd.py
 
 # Install system-wide
@@ -21,143 +57,182 @@ sudo cp camd.py /usr/local/bin/camd
 # Or install for current user
 mkdir -p ~/.local/bin
 cp camd.py ~/.local/bin/camd
-export PATH="$HOME/.local/bin:$PATH"
-```
-
-## 🔑 Setup
-
-```bash
-camd setup
-```
-
-You'll be guided through getting API keys:
-
-### Runpod API Key
-1. Go to: https://www.runpod.io/console/user/settings
-2. Create API key
-3. Enter when prompted
-
-### Vultr API Key
-1. Go to: https://my.vultr.com/settings/#settingsapi
-2. Enable API and create key
-3. Enter when prompted
-
-## 🎮 Demo Mode (No API Keys)
-
-Try camd without setting up API keys:
-
-```bash
-camd list --demo
-```
-
-## 💰 Find Cheapest MI300X
-
-```bash
-camd list
-```
-
-Output shows:
-- All available MI300X instances sorted by price
-- Price per GPU hour (important for multi-GPU setups)
-- Features like spot pricing, regions, memory variants
-- Comparison with NVIDIA H100 pricing
-
-## 🚀 Deploy
-
-Deploy the cheapest MI300X:
-```bash
-camd deploy mi300x
-```
-
-Deploy from specific provider:
-```bash
-camd deploy mi300x --provider vultr
-```
-
-## 📊 GPU Information
-
-Get detailed MI300X specifications:
-```bash
-camd info mi300x
-```
-
-Shows:
-- 192GB HBM3 memory (2.4x more than H100!)
-- 5.3 TB/s bandwidth
-- Performance specs
-- Use cases
-- Software support
-
-## 💡 Key Benefits of MI300X
-
-1. **Massive Memory**: 192GB vs H100's 80GB
-2. **Cost Savings**: ~40-50% cheaper than H100
-3. **Single GPU for 70B Models**: No need for complex multi-GPU setups
-4. **Great Availability**: Both Runpod and Vultr have stock
-
-## 🏷️ Current Pricing (Jan 2024)
-
-- **Vultr**: $2.50/hr (best price!)
-- **Runpod**: $2.99/hr (but 50% off with spot = $1.50/hr!)
-- **H100**: ~$4.50/hr (for comparison)
-
-## 🔥 Pro Tips
-
-1. **Use Runpod Spot**: 50% discount brings it to $1.50/hr
-2. **Vultr for Short Jobs**: Hourly billing, no commitment
-3. **Cache Works**: Results cached for 5 minutes to save API calls
-4. **Multi-GPU Value**: Price per GPU stays consistent
-
-## 📝 Example Workflow
-
-```bash
-# 1. Setup (one time)
-camd setup
-
-# 2. Check prices
-camd list
-
-# 3. Deploy cheapest
-camd deploy mi300x
-
-# 4. Get instance details and start working!
-```
-
-## 🆘 Troubleshooting
-
-**"No configuration found"**
-- Run `camd setup` first
-- Or use `camd list --demo` for demo mode
-
-**"No GPUs found"**
-- Check your API keys are correct
-- Try `camd list --demo` to see example data
-
-**Adding to PATH**
-```bash
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-## 🔧 Advanced: Add New Provider
+### Requirements
+- Python 3.6+
+- `requests` library (`pip install requests`)
 
-1. Copy the `ExampleProvider` class from camd.py
-2. Implement `get_gpu_pricing()` and `get_available_gpus()`
-3. Add to providers dict in `load_config()`
-4. Add API key to .env file
+## 🚀 Quick Start
 
-## 📈 Future Providers
+### 1. Setup (One-time)
+```bash
+camd setup
+```
 
-Watch for MI300X on:
-- **Azure**: ND v5 series (coming soon)
-- **OCI**: Bare metal clusters
-- **TensorWave**: Specialized MI300X platform
+You'll be guided to get API keys from:
+- **RunPod**: https://www.runpod.io/console/user/settings
+- **Vultr**: https://my.vultr.com/settings/#settingsapi
 
-## 💬 Support
+### 2. Find AMD Hardware
+```bash
+# List all AMD hardware (GPUs + CPUs)
+camd list
 
-- GitHub: https://github.com/cheapamd/camd
-- Discord: https://discord.gg/cheapamd
+# List only AMD GPUs
+camd list gpu
+
+# List only AMD CPUs  
+camd list cpu
+```
+
+## 📊 Sample Output
+
+```
+💰 camd v6.0.0 - Checking AMD hardware availability...
+
+━━━ AMD GPU Instances ━━━
+MI300X: 192GB HBM3 | 5.3TB/s | 1307.4 TFLOPS
+
+💵 $/hr    Provider     Model      Count  VRAM       Type                 Available
+─────────────────────────────────────────────────────────────────────────────────
+$1.25      RunPod       MI300X     1      192GB      MI300X-spot          ✓
+$2.49      RunPod       MI300X     1      192GB      MI300X-ondemand      ✓
+$2.50      Vultr        MI300X     1      192GB      gpu-mi300x-1         ✓
+$5.00      Vultr        MI300X     2      384GB      gpu-mi300x-2         ✓
+
+━━━ AMD CPU Instances ━━━
+AMD EPYC processors - Industry leading performance
+
+💵 $/hr    Provider     Type                 vCPUs    RAM        Category
+─────────────────────────────────────────────────────────────────────────────────
+$0.01      Vultr        vhf-1c-1gb-amd       1        1GB        High Frequency AMD
+$0.01      Vultr        vhp-1c-1gb-amd       1        1GB        High Performance AMD
+$0.02      Vultr        vhf-1c-2gb-amd       1        2GB        High Frequency AMD
+...
+```
+
+## 🏢 Supported Providers
+
+### Current Providers
+
+| Provider | AMD GPUs | AMD CPUs | API Status | Notes |
+|----------|----------|----------|------------|--------|
+| **RunPod** | ✅ MI300X, MI250X | ❌ | Stable | Best for GPU workloads, spot pricing available |
+| **Vultr** | 🔄 Limited | ✅ EPYC | Stable | Excellent CPU selection, some GPU availability |
+
+### Provider Details
+
+#### RunPod
+- **Strengths**: GPU-focused, spot instances (50% off), global availability
+- **GPUs**: MI300X ($2.49/hr), MI250X ($1.99/hr estimated)
+- **Features**: Multi-GPU clusters, persistent storage, Jupyter support
+
+#### Vultr
+- **Strengths**: Wide CPU selection, hourly billing, 25+ locations
+- **CPUs**: EPYC 7003 (Milan), 7002 (Rome), 9004 (Genoa)
+- **Types**: High Performance (vhp), Optimized Cloud (voc), High Frequency (vhf)
+
+
+
+## 💡 Use Cases
+
+### Perfect for MI300X (192GB)
+- **70B+ LLMs**: Run Llama-70B on a single GPU!
+- **RAG Systems**: Massive context windows
+- **Multi-modal AI**: Image + text models
+- **Scientific Computing**: Large memory requirements
+
+### Perfect for AMD CPUs
+- **Web Hosting**: Better price/performance than Intel
+- **Databases**: High memory bandwidth
+- **Containers**: Excellent multi-threading
+- **CI/CD**: Cost-effective build servers
+
+## 🛠️ Advanced Usage
+
+### Environment Variables
+```bash
+# API Keys
+export RUNPOD_API_KEY='your-key'
+export VULTR_API_KEY='your-key'
+
+# Cache timeout (minutes)
+export CAMD_CACHE_MINUTES=5
+
+# Debug mode
+export CAMD_DEBUG=1
+```
+
+### Configuration File
+```bash
+# Location: ~/.camd/.env
+RUNPOD_API_KEY=your_runpod_key
+VULTR_API_KEY=your_vultr_key
+CAMD_CACHE_MINUTES=5
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how to add a new provider:
+
+1. Create a new provider class inheriting from base
+2. Implement `get_amd_hardware()` method
+3. Add to provider initialization in `load_config()`
+4. Submit PR with example output
+
+### Development Setup
+```bash
+git clone https://github.com/modelturnedgeek/CheaperNvidia
+cd CheaperNvidia
+pip install requests  # Only dependency
+python camd.py setup
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**"No configuration found"**
+```bash
+camd setup  # Run setup first
+```
+
+**"No AMD hardware found"**
+- Check API keys are valid
+- Ensure you have network connectivity
+- Try with debug mode: `CAMD_DEBUG=1 camd list`
+
+**API Rate Limits**
+- Results are cached for 5 minutes
+- Adjust with `CAMD_CACHE_MINUTES`
+
+## 📚 Resources
+
+- [AMD Instinct MI300X](https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html)
+- [AMD EPYC Processors](https://www.amd.com/en/processors/epyc)
+- [RunPod Documentation](https://docs.runpod.io)
+- [Vultr API Docs](https://www.vultr.com/api/)
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file
+
+## 🙏 Acknowledgments
+
+- AMD for making competitive hardware
+- Cloud providers offering AMD instances
+- The open-source community
 
 ---
 
-**Remember**: MI300X has 2.4x more memory than H100 at 40% less cost. Perfect for large language models!
+<div align="center">
+
+**Built with ❤️ for the AMD community**
+
+[Report Bug](https://github.com/modelturnedgeek/CheaperNvidia/issues) •
+[Request Feature](https://github.com/modelturnedgeek/CheaperNvidia/issues)
+
+</div>
